@@ -18,6 +18,7 @@ Cache provider interfaces are currently available for
 
 ##Example
 Storing a string in [Redis](http://redis.io):
+
     store, err := cache.New("redis://127.0.0.1:6379?timeout=2")
     if err != nil {
       // handle error
@@ -25,6 +26,7 @@ Storing a string in [Redis](http://redis.io):
     store.Set("msg", "hello world!")
 
 and later on retrieving it:
+
     store, err := cache.New("redis://127.0.0.1:6379?timeout=2")
     if err != nil {
       // handle error
