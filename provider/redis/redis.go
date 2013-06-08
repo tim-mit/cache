@@ -2,28 +2,27 @@ package redis
 
 import (
 	"github.com/tim-mit/cache"
-	"github.com/tim-mit/cache/driver"
+	"github.com/tim-mit/cache/provider"
 	"github.com/garyburd/redigo/redis"
 	"fmt"
 	"time"
-	"log"
 	"strconv"
 )
 
-// validate driver.Driver interface satisfied
-var _ driver.Driver = (*redisDriver)(nil)
+// validate provider.Provider interface satisfied
+var _ provider.Provider = (*redisProvider)(nil)
 
 type connParams struct {
 	host string
 	timeout time.Duration
 }
 
-type redisDriver struct {
+type redisProvider struct {
 	conn redis.Conn
 	params *connParams
 }
 
-func (d *redisDriver) parseDetails(host string, params map[string][]string) (error) {
+func (d *redisProvider) parseDetails(host string, params map[string][]string) (error) {
 
 	d.params = &connParams{
 		host: host,
@@ -41,7 +40,7 @@ func (d *redisDriver) parseDetails(host string, params map[string][]string) (err
 	return nil
 }
 
-func (d *redisDriver) Initialise(host string, params map[string][]string) (error) {
+func (d *redisProvider) Initialise(host string, params map[string][]string) (error) {
 
 	err := d.parseDetails(host, params)
 	
@@ -49,7 +48,6 @@ func (d *redisDriver) Initialise(host string, params map[string][]string) (error
 		return err
 	}
 
-	log.Println("connecting to", d.params.host, "with timeout", d.params.timeout)
 	// TODO conn, read and write timeouts should all be separate items
 	//      need to handle one and not the others being set though
 	c, err := redis.DialTimeout("tcp", d.params.host, d.params.timeout, d.params.timeout, d.params.timeout)
@@ -62,7 +60,7 @@ func (d *redisDriver) Initialise(host string, params map[string][]string) (error
 	return nil
 }
 
-func (d *redisDriver) Set(name string, data interface{}, expiry time.Duration) (error) {
+func (d *redisProvider) Set(name string, data interface{}, expiry time.Duration) (error) {
 	_, err := d.conn.Do("set", name, data)
 	if err != nil {
 		return fmt.Errorf("cache::redis: error during set -", err)
@@ -71,19 +69,17 @@ func (d *redisDriver) Set(name string, data interface{}, expiry time.Duration) (
 	return nil
 }
 
-func (d *redisDriver) Get(name string) (*driver.Result) {
-	log.Println("getting")
+func (d *redisProvider) Get(name string) (*provider.Result) {
 	val, err := d.conn.Do("get", name)
 	if err != nil {
-		return &driver.Result{
-			driver.Error{fmt.Errorf("cache::redis: error during get -", err)},
+		return &provider.Result{
+			provider.Error{fmt.Errorf("cache::redis: error during get -", err)},
 		}
 	}
 	
-	log.Println("returning data")
-	return &driver.Result{val}
+	return &provider.Result{val}
 }
 
 func init() {
-	cache.Register("redis", &redisDriver{})
+	cache.Register("redis", &redisProvider{})
 }

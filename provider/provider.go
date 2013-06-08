@@ -1,10 +1,9 @@
-package driver
+package provider
 
 import (
 	"time"
 	"fmt"
 	"reflect"
-	//"net/url"
 )
 
 type Error struct {
@@ -15,7 +14,7 @@ type Result struct {
 	Value interface{}
 }
 
-type Driver interface {
+type Provider interface {
 	Initialise(host string, params map[string][]string) (error)
 	Set(name string, data interface{}, expiry time.Duration) (error)
 	Get(name string) (*Result)
@@ -33,7 +32,7 @@ func (i *Result) String() (string, error) {
 	case Error:
 		return "", val.Value
 	}
-	return "", fmt.Errorf("cache::driver: unable to convert %v to string", reflect.TypeOf(val))
+	return "", fmt.Errorf("cache::provider: unable to convert %v to string", reflect.TypeOf(val))
 }
 
 func (i *Result) Bytes() ([]byte, error) {
@@ -48,5 +47,5 @@ func (i *Result) Bytes() ([]byte, error) {
 	case Error:
 		return nil, val.Value
 	}
-	return nil, fmt.Errorf("cache::driver: unable to convert %v to []byte", reflect.TypeOf(val))
+	return nil, fmt.Errorf("cache::provider: unable to convert %v to []byte", reflect.TypeOf(val))
 }

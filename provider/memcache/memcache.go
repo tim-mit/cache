@@ -2,18 +2,17 @@ package memcache
 
 import (
 	"github.com/tim-mit/cache"
-	"github.com/tim-mit/cache/driver"
+	"github.com/tim-mit/cache/provider"
 	"github.com/bradfitz/gomemcache/memcache"
 	"fmt"
 	"time"
-	"log"
 	"strconv"
 )
 
-// validate driver.Driver interface satisfied
-var _ driver.Driver = (*memcacheDriver)(nil)
+// validate provider.Provider interface satisfied
+var _ provider.Provider = (*memcacheProvider)(nil)
 
-type memcacheDriver struct {
+type memcacheProvider struct {
 	client *memcache.Client
 	params *connParams
 }
@@ -23,7 +22,7 @@ type connParams struct {
 	timeout time.Duration
 }
 
-func (d *memcacheDriver) parseDetails(host string, params map[string][]string) (error) {
+func (d *memcacheProvider) parseDetails(host string, params map[string][]string) (error) {
 
 	d.params = &connParams{
 		host: host,
@@ -41,7 +40,7 @@ func (d *memcacheDriver) parseDetails(host string, params map[string][]string) (
 	return nil
 }
 
-func (d *memcacheDriver) Initialise(host string, params map[string][]string) (error) {
+func (d *memcacheProvider) Initialise(host string, params map[string][]string) (error) {
 	err := d.parseDetails(host, params)
 	
 	if err != nil {
@@ -54,9 +53,9 @@ func (d *memcacheDriver) Initialise(host string, params map[string][]string) (er
 	return nil
 }
 
-func (d *memcacheDriver) Set(name string, data interface{}, expiry time.Duration) (error) {
+func (d *memcacheProvider) Set(name string, data interface{}, expiry time.Duration) (error) {
 
-	byteData, err := (&driver.Result{data}).Bytes()
+	byteData, err := (&provider.Result{data}).Bytes()
 
 	err = d.client.Set(&memcache.Item{
 		Key: name,
@@ -70,19 +69,17 @@ func (d *memcacheDriver) Set(name string, data interface{}, expiry time.Duration
 	return nil
 }
 
-func (d *memcacheDriver) Get(name string) (*driver.Result) {
-	log.Println("getting")
+func (d *memcacheProvider) Get(name string) (*provider.Result) {
 	val, err := d.client.Get(name)
 	if err != nil {
-		return &driver.Result{
-			driver.Error{fmt.Errorf("cache::memcache: error during get -", err)},
+		return &provider.Result{
+			provider.Error{fmt.Errorf("cache::memcache: error during get -", err)},
 		}
 	}
 	
-	log.Println("returning data")
-	return &driver.Result{val.Value}
+	return &provider.Result{val.Value}
 }
 
 func init() {
-	cache.Register("memcache", &memcacheDriver{})
+	cache.Register("memcache", &memcacheProvider{})
 }

@@ -2,13 +2,13 @@ package shm
 
 import (
 	"github.com/tim-mit/cache"
-	"github.com/tim-mit/cache/driver"
+	"github.com/tim-mit/cache/provider"
 	"time"
 	"sync"
 )
 
-// validate driver.Driver interface satisfied
-var _ driver.Driver = (*shmDriver)(nil)
+// validate provider.Provider interface satisfied
+var _ provider.Provider = (*shmProvider)(nil)
 
 type item struct {
 	data interface{}
@@ -25,18 +25,18 @@ type connParams struct {
 	timeout time.Duration
 }
 
-type shmDriver struct {
+type shmProvider struct {
 	data *backingStore
 	params *connParams
 }
 
-func (d *shmDriver) cleaner() {
+func (d *shmProvider) cleaner() {
 	// walk the map and remove any items older than their expiry
 	
 	// call GC to actually have it flushed?
 }
 
-func (d *shmDriver) Initialise(_ string, _ map[string][]string) (error) {
+func (d *shmProvider) Initialise(_ string, _ map[string][]string) (error) {
 	d.data = &backingStore{
 		store: map[string]*item{},
 	}
@@ -44,7 +44,7 @@ func (d *shmDriver) Initialise(_ string, _ map[string][]string) (error) {
 	return nil
 }
 
-func (d *shmDriver) Set(name string, data interface{}, expiry time.Duration) (error) {
+func (d *shmProvider) Set(name string, data interface{}, expiry time.Duration) (error) {
 	var exp *time.Time
 	if expiry > -1 {
 		t := time.Now().Add(expiry)
@@ -63,16 +63,16 @@ func (d *shmDriver) Set(name string, data interface{}, expiry time.Duration) (er
 	return nil
 }
 
-func (d *shmDriver) Get(name string) (*driver.Result) {
+func (d *shmProvider) Get(name string) (*provider.Result) {
 	val := d.data.store[name]
 	
 	if val.expiry.Before(time.Now()) {
-		return &driver.Result{nil}
+		return &provider.Result{nil}
 	}
 	
-	return &driver.Result{val.data}
+	return &provider.Result{val.data}
 }
 
 func init() {
-	cache.Register("shm", &shmDriver{})
+	cache.Register("shm", &shmProvider{})
 }
