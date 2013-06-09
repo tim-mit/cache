@@ -22,20 +22,24 @@ func Register(name string, provider provider.Provider) {
 	providers[name] = provider
 }
 
+// A Cache is the base type representing a store which can have items
+// added to or read from.
 type Cache struct {
 	provider provider.Provider
 }
 
-func New(connUri string) (*Cache, error) {
+// Creates and initialises a new Cache store of the type specified in the uri.
+// The returned Cache pointer can then be used to interact with the store.
+func New(cacheUri string) (*Cache, error) {
 
-	url, err := url.Parse(connUri)
+	url, err := url.Parse(cacheUri)
 	if err != nil {
-		return nil, fmt.Errorf("cache: invalid connection uri", connUri)
+		return nil, fmt.Errorf("cache: Invalid cache initialisation uri", cacheUri)
 	}
 
 	d, ok := providers[url.Scheme]
 	if !ok {
-		return nil, fmt.Errorf("cache: unknown provider %q (forgotten import?)", url.Scheme)
+		return nil, fmt.Errorf("cache: Unknown provider %q (forgotten import?)", url.Scheme)
 	}
 	
 	cache := &Cache{
@@ -47,15 +51,18 @@ func New(connUri string) (*Cache, error) {
 	return cache, nil	
 }
 
+// Store data in the Cache item referenced by the given name. The data should
+// not be returned after the expiry time has elapsed.
 func (c *Cache) Set(name string, data interface{}, expiry time.Duration) (error) {
 	err := c.provider.Set(name, data, expiry)
 	if err != nil {
-		return fmt.Errorf("cache: failure storing data %q", err)
+		return fmt.Errorf("cache: Failure storing data %q", err)
 	}
 	
 	return nil
 } 
 
+// Retrieve any data stored in the Cache and referenced by the given name.
 func (c *Cache) Get(name string) (*provider.Result) {
 	return c.provider.Get(name)
 }
