@@ -1,3 +1,8 @@
+// The provider package specifies the interface any provider
+// plugins must implement to be used via the cache package.
+// There are several helper utility functions that can be
+// used to easily retrieve data in a particular form from a
+// call to cache.Get.
 package provider
 
 import (

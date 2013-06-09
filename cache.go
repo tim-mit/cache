@@ -1,3 +1,18 @@
+// cache is an attempt to create and build a unified API to many
+// different cache providers. Application code can use this library
+// to insulate itself from being tied to one cache implementation.
+//
+// A modular provider system (a la the core database/sql package)
+// is used so any backing store that offers cache semantics can be
+// utilised.
+//
+// A 'cache' in this implementation is taken to mean (and only mean)
+// storing arbitrary blobs of data for subsequent retrieval.
+//
+// This is the base package and doesn't actually implement any cache
+// of its own. This package needs to be used in conjunction with a
+// provider package.
+//
 package cache
 
 import (

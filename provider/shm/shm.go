@@ -12,6 +12,17 @@
 //     _ github.com/tim-mit/cache/provider/shm
 //   )
 //
+//   store, err := cache.New("shm://")
+//   if err != nil {
+//      // handle error
+//   }
+//
+//   err = store.Set("app.key", "Data to store")
+//
+//   [snip]
+//
+//   msg, err := store.Get("app.key")
+//
 package shm
 
 import (

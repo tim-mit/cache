@@ -10,6 +10,17 @@
 //     _ github.com/tim-mit/cache/provider/redis
 //   )
 //
+//   store, err := cache.New("redis://127.0.0.1:6379?timeout=5")
+//   if err != nil {
+//      // handle error
+//   }
+//
+//   err = store.Set("app.key", "Data to store")
+//
+//   [snip]
+//
+//   msg, err := store.Get("app.key")
+//
 package redis
 
 import (

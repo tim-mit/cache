@@ -10,6 +10,17 @@
 //     _ github.com/tim-mit/cache/provider/memcache
 //   )
 //
+//   store, err := cache.New("memcache://127.0.0.1:11211?timeout=5")
+//   if err != nil {
+//      // handle error
+//   }
+//
+//   err = store.Set("app.key", "Data to store")
+//
+//   [snip]
+//
+//   msg, err := store.Get("app.key")
+//
 package memcache
 
 import (
