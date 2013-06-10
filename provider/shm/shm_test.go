@@ -25,8 +25,8 @@ func TestShm(t *testing.T) {
 	t.Log("store of test string passes")
 	
 	val, err := store.Get("test-string").String()
-	
 	chkerr(t, err)
+	
 	if val != testString {
 		t.Log("retrieving test string fails due to mismatch ( [orig]", testString, " != [retrieved]", val, ")")
 		t.Fail()
@@ -47,5 +47,13 @@ func TestShm(t *testing.T) {
 		t.Fail()
 	} else {
 		t.Log("retrieving test byte array passes")
+	}
+	
+	val3, err := store.Get("test-string-not-set").String()
+	chkerr(t, err)
+	
+	if val3 != "" {
+		t.Log("non-nil response to request for key with no content")
+		t.Fail()
 	}
 }

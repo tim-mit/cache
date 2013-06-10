@@ -103,7 +103,7 @@ func (d *shmProvider) Set(name string, data interface{}, expiry time.Duration) (
 func (d *shmProvider) Get(name string) (*provider.Result) {
 	val := d.data.store[name]
 	
-	if val.expiry.Before(time.Now()) {
+	if val == nil || val.expiry.Before(time.Now()) {
 		return &provider.Result{nil}
 	}
 	

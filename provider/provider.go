@@ -39,6 +39,8 @@ func (i *Result) String() (string, error) {
 		return val, nil
 	case []byte:
 		return string(val), nil
+	case nil:
+		return "", nil
 	case Error:
 		return "", val.Value
 	}
