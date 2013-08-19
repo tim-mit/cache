@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cache by tim-mit</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Cache</h1>
+        <p>A standardised cache client interface for Go.</p>
+
+        <p class="view"><a href="https://github.com/tim-mit/cache">View the Project on GitHub <small>tim-mit/cache</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/tim-mit/cache/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tim-mit/cache/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tim-mit/cache">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="cache" class="anchor" href="#cache"><span class="octicon octicon-link"></span></a>cache</h1>
+
+<p>A generic cache client interface for <a href="http://golang.org">Go</a>.</p>
+
+<h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p><a href="https://github.com/tim-mit/cache">cache</a> is an attempt to create and build a unified API to many different cache
+providers. Application code can use this library to insulate itself from being tied to one cache implementation.</p>
+
+<p>A modular provider system (a la the core <a href="http://golang.org/pkg/database/sql/">database/sql</a> package) is used so
+any backing store that offers cache semantics can be utilised.</p>
+
+<h2>
+<a name="providers" class="anchor" href="#providers"><span class="octicon octicon-link"></span></a>Providers</h2>
+
+<p>Cache provider interfaces are currently available for</p>
+
+<ul>
+<li><a href="http://memcached.org/">Memcached</a></li>
+<li><a href="http://redis.io">Redis</a></li>
+<li>SHM (shared application memory, concurrent access safe)</li>
+</ul><h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<p>Storing a string in <a href="http://redis.io">Redis</a>:</p>
+
+<pre><code>store, err := cache.New("redis://127.0.0.1:6379?timeout=2")
+if err != nil {
+  // handle error
+}
+store.Set("msg", "hello world!")
+</code></pre>
+
+<p>and later on retrieving it:</p>
+
+<pre><code>store, err := cache.New("redis://127.0.0.1:6379?timeout=2")
+if err != nil {
+  // handle error
+}
+val, err = store.Get("msg").String()
+</code></pre>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>The core package can be installed using <code>go get</code>:</p>
+
+<p>go get github.com/tim-mit/cache</p>
+
+<p>but to be useful you need to also install at least one of the following providers;</p>
+
+<pre><code>go get github.com/tim-mit/cache/providers/memcache
+go get github.com/tim-mit/cache/providers/redis
+go get github.com/tim-mit/cache/providers/shm
+</code></pre>
+
+<p>The <a href="http://github.com/tim-mit/cache/providers/memcache">Memcache</a> and <a href="http://github.com/tim-mit/cache/providers/redis">Redis</a> providers have dependencies on the following two packages respectively</p>
+
+<pre><code>go get github.com/bradfitz/gomemcache/memcache
+go get github.com/garyburd/redigo
+</code></pre>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This package is available for use under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/tim-mit">tim-mit</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
