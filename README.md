@@ -1,11 +1,11 @@
 #cache
 
-A generic cache client interface for [Go](http://golang.org).
+A generic cache client interface for [Golang](http://golang.org).
 
 ##Introduction
 
-[cache](https://github.com/tim-mit/cache) is an attempt to create and build a unified API to many different cache
-providers. Application code can use this library to insulate itself from being tied to one cache implementation.
+[cache](https://github.com/tim-mit/cache) is an attempt to create and build a unified Golang API to many different cache
+providers. Golang application code can use this library to insulate itself from being tied to one cache implementation.
 
 A modular provider system (a la the core [database/sql](http://golang.org/pkg/database/sql/) package) is used so
 any backing store that offers cache semantics can be utilised.
